@@ -1,0 +1,1547 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>قلبنا - مساحتنا الخاصة ❤️</title>
+<link rel="icon" type="image/x-icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>❤️</text></svg>">
+
+<!-- الخطوط -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;800&family=Amiri:wght@400;700&family=Lateef:wght@400;700&display=swap" rel="stylesheet">
+
+<!-- Font Awesome للأيقونات -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<style>
+/* === المتغيرات العامة === */
+:root {
+  --primary: #ff6b8b;
+  --primary-dark: #e8436c;
+  --secondary: #ffd166;
+  --accent: #a8e6cf;
+  --light: #fff7f8;
+  --dark: #333333;
+  --text: #2c2c2c;
+  --muted: #777777;
+  --shadow: 0 8px 30px rgba(255, 107, 139, 0.15);
+  --card-bg: rgba(255, 255, 255, 0.95);
+  --transition: all 0.3s ease;
+}
+
+/* === التنسيق العام === */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: 'Cairo', sans-serif;
+  background: linear-gradient(135deg, #fff5f7 0%, #fff 100%);
+  color: var(--text);
+  line-height: 1.6;
+  overflow-x: hidden;
+  min-height: 100vh;
+  position: relative;
+}
+
+body::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: 
+    radial-gradient(circle at 10% 20%, rgba(255, 209, 102, 0.1) 0%, transparent 20%),
+    radial-gradient(circle at 90% 30%, rgba(255, 107, 139, 0.1) 0%, transparent 20%),
+    radial-gradient(circle at 50% 80%, rgba(168, 230, 207, 0.1) 0%, transparent 20%);
+  z-index: -1;
+}
+
+/* === شاشة كلمة السر === */
+#lockScreen {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, #ff9a9e 0%, #fad0c4 100%);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+  animation: fadeIn 0.5s ease;
+}
+
+.lock-box {
+  background: var(--card-bg);
+  padding: 40px 30px;
+  border-radius: 20px;
+  text-align: center;
+  width: 90%;
+  max-width: 400px;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.2);
+  animation: popIn 0.8s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.lock-box::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 5px;
+  background: linear-gradient(90deg, var(--primary), var(--secondary));
+}
+
+.lock-box h2 {
+  margin: 0 0 15px;
+  color: var(--primary-dark);
+  font-size: 1.8rem;
+  font-weight: 800;
+}
+
+.lock-box p {
+  margin: 0 0 25px;
+  color: var(--muted);
+  font-size: 1.1rem;
+}
+
+.lock-box input {
+  width: 100%;
+  padding: 15px;
+  border-radius: 12px;
+  border: 2px solid #eee;
+  margin-bottom: 20px;
+  font-size: 1rem;
+  text-align: center;
+  font-family: 'Cairo', sans-serif;
+  transition: var(--transition);
+}
+
+.lock-box input:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(255, 107, 139, 0.2);
+}
+
+.lock-box button {
+  width: 100%;
+  padding: 15px;
+  border: none;
+  border-radius: 12px;
+  background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+  color: white;
+  font-size: 1.1rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: var(--transition);
+  font-family: 'Cairo', sans-serif;
+}
+
+.lock-box button:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 20px rgba(232, 67, 108, 0.3);
+}
+
+#error {
+  color: #ff4757;
+  font-size: 0.95rem;
+  margin-top: 15px;
+  display: none;
+  animation: shake 0.5s ease;
+}
+
+.heart-icon {
+  font-size: 2.5rem;
+  color: var(--primary);
+  margin-bottom: 15px;
+  animation: pulse 2s infinite;
+}
+
+/* === الهيدر والشريط العلوي === */
+.top-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 60px;
+  background: var(--card-bg);
+  backdrop-filter: blur(10px);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 20px;
+  z-index: 100;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+  border-bottom: 1px solid rgba(255, 107, 139, 0.1);
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 800;
+  font-size: 1.4rem;
+  color: var(--primary-dark);
+}
+
+.logo i {
+  color: var(--primary);
+}
+
+.date-display {
+  font-size: 0.9rem;
+  color: var(--muted);
+  background: rgba(255, 107, 139, 0.1);
+  padding: 5px 12px;
+  border-radius: 20px;
+}
+
+.nav-menu {
+  display: flex;
+  gap: 5px;
+}
+
+.nav-btn {
+  background: transparent;
+  border: none;
+  padding: 8px 15px;
+  border-radius: 20px;
+  color: var(--muted);
+  cursor: pointer;
+  font-family: 'Cairo', sans-serif;
+  font-weight: 600;
+  transition: var(--transition);
+}
+
+.nav-btn:hover, .nav-btn.active {
+  background: rgba(255, 107, 139, 0.1);
+  color: var(--primary);
+}
+
+/* === المحتوى الرئيسي === */
+.main-content {
+  padding-top: 80px;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 100px 20px 50px;
+}
+
+/* === قسم البطل (Hero) === */
+.hero-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  margin-bottom: 60px;
+  animation: fadeUp 1s ease;
+}
+
+.couple-photo {
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 8px solid white;
+  box-shadow: var(--shadow);
+  margin-bottom: 30px;
+  position: relative;
+}
+
+.couple-photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.couple-names {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.name {
+  font-size: 2.8rem;
+  font-weight: 800;
+  color: var(--primary-dark);
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.heart {
+  font-size: 3rem;
+  color: var(--primary);
+  animation: heartbeat 1.5s infinite;
+}
+
+.welcome-message {
+  font-size: 1.2rem;
+  color: var(--muted);
+  max-width: 600px;
+  margin: 0 auto 30px;
+  line-height: 1.8;
+}
+
+.quote-box {
+  background: var(--card-bg);
+  padding: 25px;
+  border-radius: 20px;
+  box-shadow: var(--shadow);
+  max-width: 800px;
+  margin: 0 auto;
+  position: relative;
+  border-right: 5px solid var(--primary);
+}
+
+.quote-box i {
+  color: var(--primary);
+  font-size: 1.5rem;
+  margin: 0 10px;
+}
+
+.quote-text {
+  font-size: 1.4rem;
+  font-weight: 600;
+  color: var(--dark);
+  font-family: 'Amiri', serif;
+  line-height: 1.8;
+}
+
+/* === الأقسام العامة === */
+.section {
+  background: var(--card-bg);
+  padding: 30px;
+  border-radius: 20px;
+  box-shadow: var(--shadow);
+  margin-bottom: 40px;
+  position: relative;
+  overflow: hidden;
+  transition: var(--transition);
+}
+
+.section:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 15px 40px rgba(255, 107, 139, 0.2);
+}
+
+.section::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 5px;
+  height: 100%;
+  background: linear-gradient(to bottom, var(--primary), var(--secondary));
+}
+
+.section-title {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  margin-bottom: 25px;
+}
+
+.section-title h2 {
+  font-size: 1.8rem;
+  color: var(--primary-dark);
+  margin: 0;
+}
+
+.section-title i {
+  color: var(--primary);
+  font-size: 1.8rem;
+}
+
+/* === معرض الصور === */
+.gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 20px;
+  margin-top: 20px;
+}
+
+.gallery-item {
+  position: relative;
+  border-radius: 15px;
+  overflow: hidden;
+  height: 200px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.gallery-item:hover {
+  transform: translateY(-10px) scale(1.03);
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+}
+
+.gallery-item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: var(--transition);
+}
+
+.gallery-item:hover img {
+  transform: scale(1.1);
+}
+
+.item-caption {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  left: 0;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.8), transparent);
+  color: white;
+  padding: 15px;
+  transform: translateY(100%);
+  transition: var(--transition);
+}
+
+.gallery-item:hover .item-caption {
+  transform: translateY(0);
+}
+
+/* === قسم الرسائل === */
+.letters-container {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  margin-top: 20px;
+}
+
+.letter-btn {
+  background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+  color: white;
+  border: none;
+  padding: 18px 25px;
+  border-radius: 15px;
+  font-family: 'Cairo', sans-serif;
+  font-size: 1.1rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: var(--transition);
+  text-align: right;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.letter-btn:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 25px rgba(232, 67, 108, 0.3);
+}
+
+.letter-btn i {
+  font-size: 1.3rem;
+}
+
+.letter-content {
+  background: rgba(255, 107, 139, 0.05);
+  padding: 25px;
+  border-radius: 15px;
+  margin-top: 20px;
+  border-right: 4px solid var(--primary);
+  display: none;
+  animation: fadeIn 0.5s ease;
+}
+
+.letter-content.show {
+  display: block;
+}
+
+/* === قسم الأشياء المفضلة === */
+.likes-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+  margin-top: 20px;
+}
+
+.like-tag {
+  background: rgba(255, 107, 139, 0.1);
+  padding: 12px 20px;
+  border-radius: 50px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  transition: var(--transition);
+}
+
+.like-tag:hover {
+  background: rgba(255, 107, 139, 0.2);
+  transform: translateY(-5px);
+}
+
+.like-tag i {
+  color: var(--primary);
+}
+
+/* === قسم الأغاني === */
+.songs-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 20px;
+  margin-top: 20px;
+}
+
+.song-card {
+  background: white;
+  border-radius: 15px;
+  overflow: hidden;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+  transition: var(--transition);
+}
+
+.song-card:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+}
+
+.song-cover {
+  height: 150px;
+  width: 100%;
+  background: linear-gradient(135deg, var(--primary), var(--secondary));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 3rem;
+}
+
+.song-info {
+  padding: 20px;
+}
+
+.song-title {
+  font-weight: 700;
+  margin-bottom: 5px;
+  color: var(--dark);
+}
+
+.song-artist {
+  color: var(--muted);
+  font-size: 0.9rem;
+  margin-bottom: 15px;
+}
+
+.play-btn {
+  background: var(--primary);
+  color: white;
+  border: none;
+  width: 100%;
+  padding: 10px;
+  border-radius: 10px;
+  font-family: 'Cairo', sans-serif;
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.play-btn:hover {
+  background: var(--primary-dark);
+}
+
+/* === قسم الأماكن === */
+.places-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 20px;
+  margin-top: 20px;
+}
+
+.place-card {
+  background: white;
+  border-radius: 15px;
+  overflow: hidden;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+}
+
+.place-image {
+  height: 180px;
+  background: linear-gradient(135deg, #a8e6cf, #ffd3b6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 3rem;
+}
+
+.place-details {
+  padding: 20px;
+}
+
+.place-name {
+  font-weight: 700;
+  margin-bottom: 10px;
+  color: var(--dark);
+  font-size: 1.2rem;
+}
+
+.place-desc {
+  color: var(--muted);
+  margin-bottom: 15px;
+  font-size: 0.95rem;
+}
+
+/* === قسم العد التنازلي === */
+.countdown-container {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  margin-top: 30px;
+  flex-wrap: wrap;
+}
+
+.countdown-box {
+  background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+  color: white;
+  width: 100px;
+  height: 100px;
+  border-radius: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 10px 25px rgba(232, 67, 108, 0.3);
+}
+
+.countdown-value {
+  font-size: 2.5rem;
+  font-weight: 800;
+  line-height: 1;
+}
+
+.countdown-label {
+  font-size: 0.9rem;
+  margin-top: 5px;
+}
+
+/* === مؤشر التحميل === */
+.loader {
+  display: none;
+  text-align: center;
+  padding: 30px;
+}
+
+.spinner {
+  border: 5px solid rgba(255, 107, 139, 0.2);
+  border-top: 5px solid var(--primary);
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  animation: spin 1s linear infinite;
+  margin: 0 auto 15px;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* === الفوتر === */
+footer {
+  background: var(--dark);
+  color: white;
+  text-align: center;
+  padding: 40px 20px;
+  margin-top: 60px;
+}
+
+.footer-heart {
+  font-size: 2.5rem;
+  color: var(--primary);
+  margin-bottom: 20px;
+  animation: pulse 2s infinite;
+}
+
+.copyright {
+  color: rgba(255, 255, 255, 0.7);
+  margin-top: 20px;
+  font-size: 0.9rem;
+}
+
+/* === المودال (نافذة الصور) === */
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.9);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  max-width: 90%;
+  max-height: 90%;
+  border-radius: 10px;
+  overflow: hidden;
+  position: relative;
+}
+
+.modal-img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.close-modal {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+  border: none;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  font-size: 1.5rem;
+  cursor: pointer;
+  transition: var(--transition);
+  backdrop-filter: blur(5px);
+}
+
+.close-modal:hover {
+  background: rgba(255, 255, 255, 0.3);
+  transform: rotate(90deg);
+}
+
+/* === الحركات والأنيميشن === */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes popIn {
+  0% { opacity: 0; transform: scale(0.8); }
+  100% { opacity: 1; transform: scale(1); }
+}
+
+@keyframes fadeUp {
+  0% { opacity: 0; transform: translateY(30px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes heartbeat {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.1); }
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+  20%, 40%, 60%, 80% { transform: translateX(5px); }
+}
+
+/* === التجاوب مع الشاشات الصغيرة === */
+@media (max-width: 768px) {
+  .top-bar {
+    padding: 0 15px;
+    height: 50px;
+  }
+  
+  .logo {
+    font-size: 1.2rem;
+  }
+  
+  .date-display {
+    display: none;
+  }
+  
+  .nav-menu {
+    gap: 2px;
+  }
+  
+  .nav-btn {
+    padding: 6px 10px;
+    font-size: 0.85rem;
+  }
+  
+  .main-content {
+    padding: 80px 15px 30px;
+  }
+  
+  .name {
+    font-size: 2rem;
+  }
+  
+  .heart {
+    font-size: 2.2rem;
+  }
+  
+  .quote-text {
+    font-size: 1.2rem;
+  }
+  
+  .section {
+    padding: 20px;
+  }
+  
+  .gallery-grid {
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 15px;
+  }
+  
+  .gallery-item {
+    height: 150px;
+  }
+  
+  .countdown-box {
+    width: 70px;
+    height: 70px;
+  }
+  
+  .countdown-value {
+    font-size: 1.8rem;
+  }
+}
+</style>
+</head>
+<body>
+
+<!-- شاشة كلمة السر -->
+<div id="lockScreen">
+  <div class="lock-box">
+    <div class="heart-icon">
+      <i class="fas fa-heart"></i>
+    </div>
+    <h2>مساحتنا الخاصة ❤️</h2>
+    <p>يا حبيبتي إسراء، اكتبي كلمة السر علشان تدخلي</p>
+    <input type="password" id="passInput" placeholder="كلمة السر" onkeypress="if(event.key === 'Enter') checkPassword()">
+    <button onclick="checkPassword()">دخول إلى عالمنا</button>
+    <div id="error">كلمة السر غير صحيحة، حاولي مرة أخرى ❤️</div>
+  </div>
+</div>
+
+<!-- الشريط العلوي -->
+<header class="top-bar">
+  <div class="logo">
+    <i class="fas fa-heart"></i>
+    <span>قلبنا</span>
+  </div>
+  
+  <div class="date-display" id="currentDate"></div>
+  
+  <nav class="nav-menu">
+    <button class="nav-btn active" onclick="scrollToSection('hero')">
+      <i class="fas fa-home"></i> البداية
+    </button>
+    <button class="nav-btn" onclick="scrollToSection('memories')">
+      <i class="fas fa-images"></i> ذكرياتنا
+    </button>
+    <button class="nav-btn" onclick="scrollToSection('letters')">
+      <i class="fas fa-envelope"></i> رسائلي
+    </button>
+    <button class="nav-btn" onclick="scrollToSection('likes')">
+      <i class="fas fa-heart"></i> مفضلاتك
+    </button>
+    <button class="nav-btn" onclick="scrollToSection('songs')">
+      <i class="fas fa-music"></i> أغانينا
+    </button>
+  </nav>
+</header>
+
+<!-- المحتوى الرئيسي -->
+<main class="main-content">
+  
+  <!-- قسم البطل -->
+  <section class="hero-section" id="hero">
+    <div class="couple-photo">
+      <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=400&q=80" alt="أحمد وإسراء">
+    </div>
+    
+    <div class="couple-names">
+      <div class="name">إسراء</div>
+      <div class="heart">❤️</div>
+      <div class="name">أحمد</div>
+    </div>
+    
+    <p class="welcome-message">
+      مرحباً يا أغلى من في الوجود ❤️<br>
+      هذا مكاننا الخاص، حيث نجمع كل الذكريات الجميلة، الرسائل الحلوة، والأشياء التي نحبها معاً.
+    </p>
+    
+    <div class="quote-box">
+      <i class="fas fa-quote-right"></i>
+      <span class="quote-text">"أريد أن أكون شيئًا جميلًا بحياتك يرسم على شفتيك الابتسامة كلما خطرت على بالك"</span>
+      <i class="fas fa-quote-left"></i>
+    </div>
+    
+    <!-- العد التنازلي -->
+    <div class="section" style="margin-top: 40px;">
+      <div class="section-title">
+        <i class="fas fa-calendar-heart"></i>
+        <h2>عد تنازلي ليوم ميلاد إسراء ❤️</h2>
+      </div>
+      
+      <p style="color: var(--muted); margin-bottom: 20px; text-align: center;">
+        العد التنازلي ليوم ميلاد حبيبتي إسراء - ٦ يونيو 🎂
+      </p>
+      
+      <div class="countdown-container" id="countdown">
+        <div class="countdown-box">
+          <div class="countdown-value" id="days">00</div>
+          <div class="countdown-label">أيام</div>
+        </div>
+        <div class="countdown-box">
+          <div class="countdown-value" id="hours">00</div>
+          <div class="countdown-label">ساعات</div>
+        </div>
+        <div class="countdown-box">
+          <div class="countdown-value" id="minutes">00</div>
+          <div class="countdown-label">دقائق</div>
+        </div>
+        <div class="countdown-box">
+          <div class="countdown-value" id="seconds">00</div>
+          <div class="countdown-label">ثواني</div>
+        </div>
+      </div>
+      
+      <div style="text-align: center; margin-top: 20px; color: var(--primary-dark); font-weight: 600;">
+        <i class="fas fa-birthday-cake"></i> ميلاد سعيد مقدماً يا أغلى حبيبة!
+      </div>
+    </div>
+  </section>
+  
+  <!-- ذكرياتنا - معرض الصور -->
+  <section class="section" id="memories">
+    <div class="section-title">
+      <i class="fas fa-camera-retro"></i>
+      <h2>ذكرياتنا الجميلة</h2>
+    </div>
+    
+    <p style="color: var(--muted); margin-bottom: 20px;">لحظات لا تنسى جمعتنا معاً ❤️</p>
+    
+    <!-- مؤشر تحميل -->
+    <div class="loader" id="galleryLoader">
+      <div class="spinner"></div>
+      <p>جاري تحميل الصور من ألبوم ذكرياتنا...</p>
+    </div>
+    
+    <!-- معرض الصور -->
+    <div class="gallery-grid" id="photoGallery">
+      <!-- سيتم إضافة الصور تلقائياً من Google Drive -->
+    </div>
+    
+    <!-- رسالة عند عدم وجود صور -->
+    <div id="noPhotosMessage" style="display: none; text-align: center; padding: 30px; color: var(--muted);">
+      <i class="fas fa-camera" style="font-size: 3rem; margin-bottom: 15px; color: #ddd;"></i>
+      <p>لا توجد صور في الألبوم بعد</p>
+      <p style="font-size: 0.9rem;">ستظهر الصور هنا تلقائياً عند رفعها على Google Drive</p>
+    </div>
+  </section>
+  
+  <!-- رسائلي لك -->
+  <section class="section" id="letters">
+    <div class="section-title">
+      <i class="fas fa-pen-fancy"></i>
+      <h2>رسائلي لكِ</h2>
+    </div>
+    
+    <p style="color: var(--muted); margin-bottom: 20px;">كلمات من القلب لا يعبر عنها سوى الحب ❤️</p>
+    
+    <div class="letters-container">
+      <button class="letter-btn" onclick="toggleLetter(0)">
+        <span>رسالة حب طويلة</span>
+        <i class="fas fa-envelope-open-text"></i>
+      </button>
+      
+      <div class="letter-content" id="letter0">
+        <h3 style="color: var(--primary-dark); margin-bottom: 15px;">يا حبيبتي إسراء،</h3>
+        <p style="line-height: 1.8; margin-bottom: 15px;">
+          كلما حاولت أن أكتب لكِ رسالة، أعجز عن وصف كل ما أشعر به تجاهك. أنتِ أكثر من مجرد حبيبة، أنتِ رفيقة الدرب، مصدر إلهامي، وسر سعادتي.
+        </p>
+        <p style="line-height: 1.8; margin-bottom: 15px;">
+          أتذكر أول مرة رأيتكِ فيها، وكأن الكون كله توقف ليلقي عليكِ الضوء. منذ تلك اللحظة، أصبحتِ كل تفاصيل حياتي أجمل.
+        </p>
+        <p style="line-height: 1.8; margin-bottom: 15px;">
+          أشكر الله كل يوم على أن منحني فرصة معرفتكِ، وأن جعل طريقنا يتقاطع في هذه الحياة. معكِ تعلمت معنى الحب الحقيقي، الذي لا يشترط ولا ينتظر مقابل.
+        </p>
+        <p style="line-height: 1.8; margin-bottom: 15px; font-weight: 600; color: var(--primary-dark);">
+          إلى الأبد... أحبك أكثر مما تتخيلين.<br>
+          أحمد ❤️
+        </p>
+      </div>
+      
+      <button class="letter-btn" onclick="toggleLetter(1)">
+        <span>قصيدة غزل</span>
+        <i class="fas fa-feather-alt"></i>
+      </button>
+      
+      <div class="letter-content" id="letter1">
+        <h3 style="color: var(--primary-dark); margin-bottom: 15px; text-align: center;">لو تعلمين كم أحبك</h3>
+        <div style="font-family: 'Amiri', serif; line-height: 2; text-align: center; font-size: 1.2rem;">
+          <p>يا قمراً أضاء دربي في الظلام</p>
+          <p>يا دفءً جمعت شتات الأحلام</p>
+          <p>أنتِ الحياة وكل معاني الجمال</p>
+          <p>وبكِ أصبح عمري أغلى رجال</p>
+          <br>
+          <p>لو يعلم الكون كم أشواقي إليكِ</p>
+          <p>لكان يغني لحناً من حبي لكِ</p>
+          <p>أحبك أكثر من كل الكلمات</p>
+          <p>أحبك يا دنيتي يا حياتي</p>
+        </div>
+      </div>
+      
+      <button class="letter-btn" onclick="toggleLetter(2)">
+        <span>كلمات شكر</span>
+        <i class="fas fa-hand-holding-heart"></i>
+      </button>
+      
+      <div class="letter-content" id="letter2">
+        <h3 style="color: var(--primary-dark); margin-bottom: 15px;">شكراً لأنكِ أنتِ</h3>
+        <p style="line-height: 1.8; margin-bottom: 15px;">
+          أشكركِ لأنكِ جعلتِ مني إنساناً أفضل، لأنكِ علمتني الصبر والحب والعطاء بلا حدود.
+        </p>
+        <p style="line-height: 1.8; margin-bottom: 15px;">
+          أشكركِ على كل ضحكة شاركتني إياها، على كل دمعَة مسحتِها عنّي، على كل لحظة جعلتِها ثمينة في حياتي.
+        </p>
+        <p style="line-height: 1.8; margin-bottom: 15px; font-style: italic;">
+          قد لا أكون الأفضل، لكني سأبذل كل جهدي لأكون الرجل الذي تستحقينه. شكراً لأنكِ أنتِ.
+        </p>
+      </div>
+    </div>
+  </section>
+  
+  <!-- الأشياء المفضلة -->
+  <section class="section" id="likes">
+    <div class="section-title">
+      <i class="fas fa-star"></i>
+      <h2>أشياء تحبينها ❤️</h2>
+    </div>
+    
+    <p style="color: var(--muted); margin-bottom: 20px;">كل شيء يذكرني بكِ، وأحب أن أشارككِ إياه</p>
+    
+    <div class="likes-container">
+      <div class="like-tag">
+        <i class="fas fa-camera"></i>
+        <span>التصوير الفوتوغرافي</span>
+      </div>
+      <div class="like-tag">
+        <i class="fas fa-paint-brush"></i>
+        <span>الرسم والتلوين</span>
+      </div>
+      <div class="like-tag">
+        <i class="fas fa-walking"></i>
+        <span>المشي لمسافات طويلة</span>
+      </div>
+      <div class="like-tag">
+        <i class="fas fa-cat"></i>
+        <span>القطط والحيوانات الأليفة</span>
+      </div>
+      <div class="like-tag">
+        <i class="fas fa-cookie"></i>
+        <span>الشوكولاتة بالملح</span>
+      </div>
+      <div class="like-tag">
+        <i class="fas fa-coffee"></i>
+        <span>قهوة الصباح</span>
+      </div>
+      <div class="like-tag">
+        <i class="fas fa-book-reader"></i>
+        <span>قراءة الروايات الرومانسية</span>
+      </div>
+      <div class="like-tag">
+        <i class="fas fa-music"></i>
+        <span>الموسيقى الهادئة</span>
+      </div>
+    </div>
+  </section>
+  
+  <!-- أغانينا -->
+  <section class="section" id="songs">
+    <div class="section-title">
+      <i class="fas fa-headphones-alt"></i>
+      <h2>أغانينا الخاصة</h2>
+    </div>
+    
+    <p style="color: var(--muted); margin-bottom: 20px;">أغانٍ تذكرني بكِ كلما سمعتها</p>
+    
+    <div class="songs-container">
+      <div class="song-card">
+        <div class="song-cover">
+          <i class="fas fa-heart"></i>
+        </div>
+        <div class="song-info">
+          <div class="song-title">Habibi Ya Nour El Ein</div>
+          <div class="song-artist">Amr Diab</div>
+          <button class="play-btn" onclick="playSong('habibi')">
+            <i class="fas fa-play"></i> استمع
+          </button>
+        </div>
+      </div>
+      
+      <div class="song-card">
+        <div class="song-cover">
+          <i class="fas fa-moon"></i>
+        </div>
+        <div class="song-info">
+          <div class="song-title">Tamally Maak</div>
+          <div class="song-artist">Amr Diab</div>
+          <button class="play-btn" onclick="playSong('tamally')">
+            <i class="fas fa-play"></i> استمع
+          </button>
+        </div>
+      </div>
+      
+      <div class="song-card">
+        <div class="song-cover">
+          <i class="fas fa-star"></i>
+        </div>
+        <div class="song-info">
+          <div class="song-title">You Are My Life</div>
+          <div class="song-artist">Mohamed Hamaki</div>
+          <button class="play-btn" onclick="playSong('life')">
+            <i class="fas fa-play"></i> استمع
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+  
+  <!-- الأماكن المفضلة -->
+  <section class="section" id="places">
+    <div class="section-title">
+      <i class="fas fa-map-marked-alt"></i>
+      <h2>أماكن نتمنى زيارتها</h2>
+    </div>
+    
+    <p style="color: var(--muted); margin-bottom: 20px;">أماكن حلمنا بأن نزورها معاً ❤️</p>
+    
+    <div class="places-container">
+      <div class="place-card">
+        <div class="place-image">
+          <i class="fas fa-home"></i>
+        </div>
+        <div class="place-details">
+          <div class="place-name">بيتنا الأول</div>
+          <div class="place-desc">بيتنا الذي سنبدأ فيه حياتنا معاً كزوجين</div>
+          <div style="margin-top: 10px; color: var(--primary); font-size: 0.9rem;">
+            <i class="fas fa-heart"></i> حلم الزواج وتحقيق أسرة سعيدة
+          </div>
+        </div>
+      </div>
+      
+      <div class="place-card">
+        <div class="place-image">
+          <i class="fas fa-mountain"></i>
+        </div>
+        <div class="place-details">
+          <div class="place-name">رحلات التصوير</div>
+          <div class="place-desc">نخرج في رحلات معاً ونصور كل شيء جميل</div>
+          <div style="margin-top: 10px; color: var(--primary); font-size: 0.9rem;">
+            <i class="fas fa-camera"></i> نلتقط ذكرياتنا في كل مكان
+          </div>
+        </div>
+      </div>
+      
+      <div class="place-card">
+        <div class="place-image">
+          <i class="fas fa-kaaba"></i>
+        </div>
+        <div class="place-details">
+          <div class="place-name">السعودية - العمرة</div>
+          <div class="place-desc">نذهب معاً لأداء العمرة ونطلب من الله السعادة</div>
+          <div style="margin-top: 10px; color: var(--primary); font-size: 0.9rem;">
+            <i class="fas fa-pray"></i> تحقيق حلم العمرة معاً
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<!-- الفوتر -->
+<footer>
+  <div class="footer-heart">
+    <i class="fas fa-heart"></i>
+  </div>
+  
+  <div style="font-size: 1.5rem; font-weight: 700; margin-bottom: 10px;">
+    إلى الأبد... إسراء ❤️ أحمد
+  </div>
+  
+  <p style="max-width: 600px; margin: 0 auto 20px; opacity: 0.9;">
+    هذا الموقع هو هدية حب صغيرة، صنعته لكِ بكل ما في قلبي. مكاننا الخاص الذي يجمع كل الذكريات الجميلة.
+  </p>
+  
+  <div class="copyright">
+    صنع بحب من أحمد إلى إسراء ❤️ © 2023
+  </div>
+</footer>
+
+<!-- مودال عرض الصور -->
+<div class="modal" id="imageModal" onclick="closeModal()">
+  <button class="close-modal" onclick="closeModal()">✕</button>
+  <div class="modal-content">
+    <img class="modal-img" id="modalImage" src="" alt="صورة">
+  </div>
+</div>
+
+<script>
+// ===== إعدادات Google Drive =====
+const DRIVE_FOLDER_ID = "1syFQS2oe8WR3Neaqmg_PVCV71Bij2aVl"; // استبدل هذا بمعرف المجلد الخاص بك
+const DRIVE_API_KEY = "AIzaSyBesSGUCri3SxN2qfdbqsVOhDUvkFUKaeU"; // استبدل هذا بمفتاح API الخاص بك
+
+// ===== كلمة السر =====
+const PASSWORD = "Ahmed love esraa";
+// تمت إزالة حفظ الحالة في localStorage لجعل كلمة السر مطلوبة في كل مرة
+
+// ===== متغيرات التطبيق =====
+let driveImages = [];
+
+// تحميل الصفحة
+document.addEventListener('DOMContentLoaded', function() {
+  // عرض شاشة كلمة السر في كل مرة
+  document.getElementById('lockScreen').style.display = 'flex';
+  document.getElementById('passInput').focus();
+  
+  // تحديث التاريخ الحالي
+  updateDate();
+  
+  // جعل أزرار التنقل نشطة
+  setupNavigation();
+});
+
+// دالة التحقق من كلمة السر
+function checkPassword() {
+  const input = document.getElementById('passInput');
+  const error = document.getElementById('error');
+  
+  if (input.value === PASSWORD) {
+    document.getElementById('lockScreen').style.display = 'none';
+    
+    // تحميل الصور بعد فتح الموقع
+    loadDriveImages();
+    
+    // بدء العد التنازلي
+    startCountdown();
+    
+    // عرض رسالة ترحيب
+    setTimeout(() => {
+      alert("مرحباً يا حبيبتي إسراء! ❤️\nأهلاً بكِ في عالمنا الخاص\nميلاد سعيد مقدماً! 🎂");
+    }, 300);
+  } else {
+    error.style.display = 'block';
+    input.value = '';
+    input.focus();
+    
+    // إخفاء الخطأ بعد 3 ثواني
+    setTimeout(() => {
+      error.style.display = 'none';
+    }, 3000);
+  }
+}
+
+// السماح بالضغط على Enter في حقل كلمة السر
+document.getElementById('passInput').addEventListener('keypress', function(e) {
+  if (e.key === 'Enter') {
+    checkPassword();
+  }
+});
+
+// ===== تحميل الصور من Google Drive =====
+async function loadDriveImages() {
+  const gallery = document.getElementById('photoGallery');
+  const loader = document.getElementById('galleryLoader');
+  const noPhotosMsg = document.getElementById('noPhotosMessage');
+  
+  // إظهار مؤشر التحميل
+  gallery.innerHTML = '';
+  loader.style.display = 'block';
+  noPhotosMsg.style.display = 'none';
+  
+  try {
+    // جلب قائمة الملفات من المجلد
+    const response = await fetch(
+      `https://www.googleapis.com/drive/v3/files?q='${DRIVE_FOLDER_ID}'+in+parents&key=${DRIVE_API_KEY}&fields=files(id,name,mimeType,webContentLink,thumbnailLink)`
+    );
+    
+    const data = await response.json();
+    
+    // إخفاء مؤشر التحميل
+    loader.style.display = 'none';
+    
+    if (!data.files || data.files.length === 0) {
+      noPhotosMsg.style.display = 'block';
+      return;
+    }
+    
+    // تصفية الملفات لاستخراج الصور فقط
+    const imageFiles = data.files.filter(file => 
+      file.mimeType.startsWith('image/')
+    );
+    
+    if (imageFiles.length === 0) {
+      noPhotosMsg.style.display = 'block';
+      return;
+    }
+    
+    // حفظ الصور للاستخدام لاحقاً
+    driveImages = imageFiles;
+    
+    // عرض الصور في المعرض
+    imageFiles.forEach((file, index) => {
+      const item = document.createElement('div');
+      item.className = 'gallery-item';
+      item.onclick = () => openImageModal(file.webContentLink || file.thumbnailLink.replace('=s220', '=s800'), file.name);
+      
+      const img = document.createElement('img');
+      
+      // استخدام رابط الصورة المصغرة أولاً، ثم تحميل الصورة كاملة
+      const thumbnailUrl = file.thumbnailLink ? file.thumbnailLink.replace('=s220', '=s400') : file.webContentLink;
+      img.src = thumbnailUrl;
+      img.alt = file.name;
+      img.loading = 'lazy';
+      
+      // تحميل الصورة عالية الجودة في الخلفية
+      const highResImg = new Image();
+      highResImg.src = file.webContentLink || thumbnailUrl;
+      highResImg.onload = function() {
+        img.src = this.src;
+      };
+      
+      const caption = document.createElement('div');
+      caption.className = 'item-caption';
+      caption.textContent = file.name.length > 20 ? file.name.substring(0, 20) + '...' : file.name;
+      
+      item.appendChild(img);
+      item.appendChild(caption);
+      gallery.appendChild(item);
+    });
+    
+    // إضافة رسالة توضيحية
+    const infoMsg = document.createElement('div');
+    infoMsg.style.cssText = 'text-align: center; color: var(--muted); margin-top: 20px; font-size: 0.9rem;';
+    infoMsg.innerHTML = `<i class="fas fa-info-circle"></i> تم تحميل ${imageFiles.length} صورة من ألبوم ذكرياتنا ❤️`;
+    gallery.parentNode.appendChild(infoMsg);
+    
+  } catch (error) {
+    console.error('خطأ في تحميل الصور:', error);
+    loader.style.display = 'none';
+    
+    // عرض رسالة خطأ
+    const errorMsg = document.createElement('div');
+    errorMsg.style.cssText = 'text-align: center; padding: 30px; color: #ff4757;';
+    errorMsg.innerHTML = `
+      <i class="fas fa-exclamation-triangle" style="font-size: 2rem; margin-bottom: 10px;"></i>
+      <p>حدث خطأ في تحميل الصور</p>
+      <p style="font-size: 0.9rem;">يمكنك تحديث الصفحة أو المحاولة لاحقاً</p>
+      <button onclick="loadDriveImages()" style="margin-top: 15px; padding: 8px 20px; background: var(--primary); color: white; border: none; border-radius: 10px; cursor: pointer;">
+        <i class="fas fa-redo"></i> حاول مرة أخرى
+      </button>
+    `;
+    gallery.parentNode.appendChild(errorMsg);
+  }
+}
+
+// ===== التاريخ الحالي =====
+function updateDate() {
+  const now = new Date();
+  const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+  const dateString = now.toLocaleDateString('ar-EG', options);
+  document.getElementById('currentDate').textContent = dateString;
+}
+
+// ===== العد التنازلي ليوم ميلاد إسراء (6 يونيو) =====
+function startCountdown() {
+  // تاريخ ميلاد إسراء - 6 يونيو
+  const now = new Date();
+  const currentYear = now.getFullYear();
+  let birthday = new Date(currentYear, 5, 6); // 5 = يونيو (الشهر يبدأ من 0)
+  
+  // إذا كان تاريخ الميلاد قد مر هذا العام، نضيف سنة
+  if (now > birthday) {
+    birthday = new Date(currentYear + 1, 5, 6);
+  }
+  
+  function updateCountdown() {
+    const now = new Date().getTime();
+    const timeLeft = birthday - now;
+    
+    if (timeLeft > 0) {
+      const days = Math.floor(timeLeft / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((timeLeft % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      const minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
+      const seconds = Math.floor((timeLeft % (1000 * 60)) / 1000);
+      
+      document.getElementById('days').textContent = days.toString().padStart(2, '0');
+      document.getElementById('hours').textContent = hours.toString().padStart(2, '0');
+      document.getElementById('minutes').textContent = minutes.toString().padStart(2, '0');
+      document.getElementById('seconds').textContent = seconds.toString().padStart(2, '0');
+    } else {
+      document.getElementById('countdown').innerHTML = '<div style="text-align:center; padding:20px; font-size:1.5rem; color:var(--primary);">🎉 ميلاد سعيد يا حبيبتي إسراء! أحبك ❤️</div>';
+    }
+  }
+  
+  updateCountdown();
+  setInterval(updateCountdown, 1000);
+}
+
+// ===== الرسائل =====
+function toggleLetter(index) {
+  const letter = document.getElementById(`letter${index}`);
+  const allLetters = document.querySelectorAll('.letter-content');
+  
+  // إغلاق جميع الرسائل الأخرى
+  allLetters.forEach(l => {
+    if (l.id !== `letter${index}`) {
+      l.classList.remove('show');
+    }
+  });
+  
+  // فتح/إغلاق الرسالة المحددة
+  letter.classList.toggle('show');
+  
+  // التمرير إلى الرسالة إذا تم فتحها
+  if (letter.classList.contains('show')) {
+    setTimeout(() => {
+      letter.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }, 100);
+  }
+}
+
+// ===== الأغاني =====
+function playSong(song) {
+  const songs = {
+    habibi: 'https://www.youtube.com/watch?v=GgGgbY1Zww8',
+    tamally: 'https://www.youtube.com/watch?v=uhQeQ9hK-7s',
+    life: 'https://www.youtube.com/watch?v=9m5C6J9lqLA'
+  };
+  
+  // إنشاء مشغل صوتي بسيط
+  const audioPlayer = document.createElement('audio');
+  audioPlayer.controls = true;
+  audioPlayer.style.width = '100%';
+  audioPlayer.style.marginTop = '10px';
+  
+  // في بيئة حقيقية، يمكنك استخدام روابط MP3 مباشرة
+  // هذا مجرد مثال - تحتاج لروابط MP3 حقيقية
+  alert(`في النسخة النهائية، يمكنك إضافة روابط MP3 حقيقية للأغاني\n\nسيتم فتح رابط اليوتيوب في نافذة جديدة`);
+  window.open(songs[song], '_blank');
+}
+
+// ===== المودال للصور =====
+function openImageModal(src, caption) {
+  const modal = document.getElementById('imageModal');
+  const modalImg = document.getElementById('modalImage');
+  
+  modalImg.src = src;
+  modalImg.alt = caption;
+  modal.style.display = 'flex';
+}
+
+function closeModal() {
+  document.getElementById('imageModal').style.display = 'none';
+}
+
+// إغلاق المودال بالضغط على Escape
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') {
+    closeModal();
+  }
+});
+
+// ===== التنقل بين الأقسام =====
+function setupNavigation() {
+  const navButtons = document.querySelectorAll('.nav-btn');
+  
+  navButtons.forEach(btn => {
+    btn.addEventListener('click', function() {
+      // إزالة النشاط من جميع الأزرار
+      navButtons.forEach(b => b.classList.remove('active'));
+      // إضافة النشاط للزر المضغوط
+      this.classList.add('active');
+    });
+  });
+}
+
+function scrollToSection(sectionId) {
+  const section = document.getElementById(sectionId);
+  if (section) {
+    section.scrollIntoView({ behavior: 'smooth' });
+  }
+}
+
+// ===== إضافة تأثيرات تفاعلية إضافية =====
+// تأثير عند التمرير
+window.addEventListener('scroll', function() {
+  const scrollPosition = window.scrollY;
+  const heroSection = document.querySelector('.hero-section');
+  
+  // تأثير بارالاكس خفيف
+  if (heroSection && scrollPosition < 500) {
+    heroSection.style.transform = `translateY(${scrollPosition * 0.05}px)`;
+  }
+  
+  // تحديث التنقل النشط حسب القسم
+  const sections = document.querySelectorAll('section');
+  const navButtons = document.querySelectorAll('.nav-btn');
+  
+  let currentSectionId = '';
+  sections.forEach(section => {
+    const sectionTop = section.offsetTop - 100;
+    const sectionHeight = section.clientHeight;
+    if (scrollPosition >= sectionTop && scrollPosition < sectionTop + sectionHeight) {
+      currentSectionId = section.id;
+    }
+  });
+  
+  if (currentSectionId) {
+    navButtons.forEach(btn => {
+      btn.classList.remove('active');
+      if (btn.getAttribute('onclick')?.includes(currentSectionId)) {
+        btn.classList.add('active');
+      }
+    });
+  }
+});
+
+// زر لإعادة تحميل الصور
+function addReloadButton() {
+  const reloadBtn = document.createElement('button');
+  reloadBtn.innerHTML = '<i class="fas fa-sync-alt"></i> تحديث الصور';
+  reloadBtn.style.cssText = `
+    display: block;
+    margin: 20px auto;
+    padding: 10px 20px;
+    background: var(--primary);
+    color: white;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    font-family: 'Cairo', sans-serif;
+    font-weight: 600;
+  `;
+  reloadBtn.onclick = loadDriveImages;
+  
+  const gallerySection = document.getElementById('memories');
+  gallerySection.appendChild(reloadBtn);
+}
+
+// إضافة زر التحديث بعد تحميل الصفحة
+setTimeout(addReloadButton, 1000);
+</script>
+
+</body>
+</html>
